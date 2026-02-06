@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "bun run --bun next dev",
+    "dev": "bun run download-images && bun run generate-images-object && bun run --bun next dev",
     "build": "bun run --bun next build",
     "start": "next start",
     "lint": "biome check",
