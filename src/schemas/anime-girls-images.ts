@@ -2,6 +2,8 @@
 export type AnimeGirlImages = {
   path: string;
   name: string;
+  altName: string;
+  extension: string; // e.g. "png", "jpg", "jpeg", "gif", "webp", etc.
   language: string;
   width: number;
   height: number;

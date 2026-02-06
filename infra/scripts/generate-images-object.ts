@@ -39,8 +39,10 @@ for (const folder of folders) {
     const width = imageMetadata.width;
     const height = imageMetadata.height;
     const size = await fs.stat(imagePath).then(stats => stats.size);
+    const extension = image.split(".")[1];
+    const altName = imageName.replace("_", " ");
 
-    imagesTsCode += `    { path: "${imageUrl}", name: "${imageName}", language: "${imageLanguage}", width: ${width}, height: ${height}, size: ${size} },\n`;
+    imagesTsCode += `    { path: "${imageUrl}", name: "${imageName}", altName: "${altName}", language: "${imageLanguage}", width: ${width}, height: ${height}, size: ${size}, extension: "${extension}" },\n`;
   }
   imagesTsCode += `  ],\n`;
 }

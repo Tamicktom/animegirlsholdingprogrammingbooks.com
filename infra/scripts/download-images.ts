@@ -28,31 +28,43 @@ console.log("Repository downloaded successfully");
 
 // delete any file that is not in the ACCEPTED_IMAGE_EXTENSIONS array and is not a folder
 // in the IMAGES_FOLDER folder
-const files = await fs.readdir(IMAGES_FOLDER);
-for (const file of files) {
-  const isFolder = await fs.stat(path.join(IMAGES_FOLDER, file)).then(stat => stat.isDirectory());
+const folders = await fs.readdir(IMAGES_FOLDER);
+for (const folder of folders) {
+  const isFolder = await fs.stat(path.join(IMAGES_FOLDER, folder)).then(stat => stat.isDirectory());
 
   // if is a folder,
   if (isFolder) {
     // if is one of the folders to delete, delete it
-    if (KNOW_FOLDERS_TO_DELETE.includes(file)) {
-      await fs.rm(path.join(IMAGES_FOLDER, file), { recursive: true });
-      console.log(`Deleted folder: ${file}`);
+    if (KNOW_FOLDERS_TO_DELETE.includes(folder)) {
+      await fs.rm(path.join(IMAGES_FOLDER, folder), { recursive: true });
+      console.log(`Deleted folder: ${folder}`);
       continue;
     }
     // if is not one of the folders to delete, delete all files that are not in the ACCEPTED_IMAGE_EXTENSIONS array
-    const subFolderFiles = await fs.readdir(path.join(IMAGES_FOLDER, file));
+    const subFolderFiles = await fs.readdir(path.join(IMAGES_FOLDER, folder));
     for (const subFolderFile of subFolderFiles) {
       // if is not in the ACCEPTED_IMAGE_EXTENSIONS array, delete it
       if (!ACCEPTED_IMAGE_EXTENSIONS.some(extension => subFolderFile.endsWith(extension))) {
-        await fs.rm(path.join(IMAGES_FOLDER, file, subFolderFile));
+        await fs.rm(path.join(IMAGES_FOLDER, folder, subFolderFile));
       }
+
+      // if contains "#" on the name, rename the file to the name without the "#"
+      if (subFolderFile.includes("#")) {
+        await fs.rename(path.join(IMAGES_FOLDER, folder, subFolderFile), path.join(IMAGES_FOLDER, folder, subFolderFile.replace("#", "sharp")));
+        console.log(`Renamed file: ${subFolderFile} to ${subFolderFile.replace("#", "sharp")}`);
+      }
+    }
+
+    // if contains "#" on the name, rename the folder to the name without the "#"
+    if (folder.includes("#")) {
+      await fs.rename(path.join(IMAGES_FOLDER, folder), path.join(IMAGES_FOLDER, folder.replace("#", "sharp")));
+      console.log(`Renamed folder: ${folder} to ${folder.replace("#", "sharp")}`);
     }
   }
   // if is not a folder, delete it if it is not in the ACCEPTED_IMAGE_EXTENSIONS array
-  else if (!ACCEPTED_IMAGE_EXTENSIONS.some(extension => file.endsWith(extension))) {
-    await fs.rm(path.join(IMAGES_FOLDER, file));
-    console.log(`Deleted file: ${file}`);
+  else if (!ACCEPTED_IMAGE_EXTENSIONS.some(extension => folder.endsWith(extension))) {
+    await fs.rm(path.join(IMAGES_FOLDER, folder));
+    console.log(`Deleted file: ${folder}`);
   }
 }
 
