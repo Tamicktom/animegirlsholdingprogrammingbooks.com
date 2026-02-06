@@ -7,7 +7,8 @@
     "build": "bun run --bun next build",
     "start": "next start",
     "lint": "biome check",
-    "format": "biome format --write"
+    "format": "biome format --write",
+    "download-images": "bun run --bun infra/scripts/download-images.ts"
   },
   "dependencies": {
     "next": "16.1.6",
