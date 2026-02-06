@@ -11,15 +11,21 @@ import sharp from "sharp";
 //* Constants imports
 import { IMAGES_FOLDER, IMAGES_OBJECT_FILE } from "./constants";
 
+console.log("Generating images object...");
+
 //* Check if the IMAGES_OBJECT_FILE file exists, if it does, delete it
 const imagesObjectFileExists = await fs.access(IMAGES_OBJECT_FILE).then(() => true, () => false);
+console.log(`Images object file exists: ${imagesObjectFileExists}`);
 if (imagesObjectFileExists) {
   await fs.rm(IMAGES_OBJECT_FILE);
+  console.log(`Deleted images object file`);
 }
 
-//* Generate the images object
+console.log("Reading folders...");
 const folders = await fs.readdir(IMAGES_FOLDER);
+console.log(`Folders read: ${folders.length} folders`);
 
+//* Generate the images object
 let imagesTsCode = "import type { LanguageFolders } from \"@/schemas/anime-girls-images\";\n";
 imagesTsCode += "\n";
 imagesTsCode += "export const animeGirlsImages: LanguageFolders = {\n";
