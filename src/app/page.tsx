@@ -6,8 +6,6 @@ import Image from "next/image";
 import { animeGirlsImages } from "@/utils/images";
 
 const MAX_IMAGES_TO_LOAD = 16;
-const MAX_COLUMN_WIDTH = 440;
-const MAX_ROW_HEIGHT = 600;
 
 export default async function LandingPage() {
   const allImages = Object.values(animeGirlsImages).flat();
@@ -16,6 +14,7 @@ export default async function LandingPage() {
     <div className="w-full min-h-svh bg-black masonry p-4">
       {allImages.map((image, index) => {
         const key = `${image.language}-${image.name}-${index}`;
+        const aspectRatio = image.width / image.height;
 
         // first 16 images should be loaded immediately
         const loading = index < MAX_IMAGES_TO_LOAD ? "eager" : "lazy";
@@ -23,31 +22,39 @@ export default async function LandingPage() {
 
         if (image.extension === "gif") {
           return (
-            <div key={key} className="masonry-item mb-4">
+            <div
+              key={key}
+              className="masonry-item mb-4"
+              style={{ aspectRatio: `${aspectRatio}` }}
+            >
               {/** biome-ignore lint/performance/noImgElement: NextImage does not support GIFs */}
               <img
                 src={image.path}
                 alt={image.altName}
-                width={MAX_COLUMN_WIDTH}
-                height={MAX_ROW_HEIGHT}
-                className="w-full h-auto object-cover rounded-lg"
+                width={image.width}
+                height={image.height}
+                className="w-full h-full object-cover rounded-lg"
               />
             </div>
           );
         }
 
         return (
-          <div key={key} className="masonry-item mb-4">
+          <div
+            key={key}
+            className="masonry-item mb-4"
+            style={{ aspectRatio: `${aspectRatio}` }}
+          >
             <Image
               src={image.path}
               alt={image.altName}
-              width={MAX_COLUMN_WIDTH}
-              height={MAX_ROW_HEIGHT}
+              width={image.width}
+              height={image.height}
               loading={loading}
               priority={priority}
               placeholder="blur"
               blurDataURL={image.dataBlurURL}
-              className="w-full h-auto object-cover rounded-lg"
+              className="w-full h-full object-cover rounded-lg"
             />
           </div>
         );
