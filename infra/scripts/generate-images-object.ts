@@ -1,0 +1,55 @@
+/**
+ * Codegen to generate the images object from the public/images folder
+ * and save it to the src/utils/images.ts file.
+ */
+
+//* Libraries imports
+import fs from "node:fs/promises";
+import path from "node:path";
+import sharp from "sharp";
+
+//* Constants imports
+import { IMAGES_FOLDER, IMAGES_OBJECT_FILE } from "./constants";
+
+//* Check if the IMAGES_OBJECT_FILE file exists, if it does, delete it
+const imagesObjectFileExists = await fs.access(IMAGES_OBJECT_FILE).then(() => true, () => false);
+if (imagesObjectFileExists) {
+  await fs.rm(IMAGES_OBJECT_FILE);
+}
+
+//* Generate the images object
+const folders = await fs.readdir(IMAGES_FOLDER);
+
+let imagesTsCode = "import type { LanguageFolders } from \"@/schemas/anime-girls-images\";\n";
+imagesTsCode += "\n";
+imagesTsCode += "export const animeGirlsImages: LanguageFolders = {\n";
+
+// each folder is a language, inside each folder are the images
+for (const folder of folders) {
+  const images = await fs.readdir(path.join(IMAGES_FOLDER, folder));
+  imagesTsCode += `  "${folder}": [\n`;
+  // for each image, create an object with the path, name and language
+  // and add it to the language folders
+  for (const image of images) {
+    const imagePath = path.join(IMAGES_FOLDER, folder, image);
+    const imageUrl = imagePath.replace("public/", "/");
+    const imageName = image.split(".")[0];
+    const imageLanguage = folder;
+    const imageMetadata = await sharp(imagePath).metadata();
+    const width = imageMetadata.width;
+    const height = imageMetadata.height;
+    const size = await fs.stat(imagePath).then(stats => stats.size);
+
+    imagesTsCode += `    { path: "${imageUrl}", name: "${imageName}", language: "${imageLanguage}", width: ${width}, height: ${height}, size: ${size} },\n`;
+  }
+  imagesTsCode += `  ],\n`;
+}
+
+imagesTsCode += "};\n";
+
+imagesTsCode += "export const animeGirlsLanguages: string[] = Object.keys(animeGirlsImages);\n";
+
+//* Save the images object to the IMAGES_OBJECT_FILE file
+await fs.writeFile(IMAGES_OBJECT_FILE, imagesTsCode);
+console.log("Images object generated successfully");
+console.log(`Images object saved to ${IMAGES_OBJECT_FILE}`);
