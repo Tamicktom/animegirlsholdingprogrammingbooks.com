@@ -46,7 +46,7 @@ export default async function LandingPage() {
               loading={loading}
               priority={priority}
               placeholder="blur"
-              blurDataURL={image.path}
+              blurDataURL={image.dataBlurURL}
               className="w-full h-auto object-cover rounded-lg"
             />
           </div>

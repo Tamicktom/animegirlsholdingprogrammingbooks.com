@@ -8,6 +8,7 @@ export type AnimeGirlImages = {
   width: number;
   height: number;
   size: number; // in bytes
+  dataBlurURL: string; // base64 encoded super small image of the original image
 };
 
 export type LanguageFolders = {

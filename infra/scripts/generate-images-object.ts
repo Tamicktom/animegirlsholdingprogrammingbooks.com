@@ -41,8 +41,12 @@ for (const folder of folders) {
     const size = await fs.stat(imagePath).then(stats => stats.size);
     const extension = image.split(".")[1];
     const altName = imageName.replace("_", " ");
+    const dataBlurURL = await sharp(imagePath)
+      .resize(16, 16)
+      .toBuffer()
+      .then(buffer => `data:image/${extension};base64,${buffer.toString("base64")}`);
 
-    imagesTsCode += `    { path: "${imageUrl}", name: "${imageName}", altName: "${altName}", language: "${imageLanguage}", width: ${width}, height: ${height}, size: ${size}, extension: "${extension}" },\n`;
+    imagesTsCode += `    { path: "${imageUrl}", name: "${imageName}", altName: "${altName}", language: "${imageLanguage}", width: ${width}, height: ${height}, size: ${size}, extension: "${extension}", dataBlurURL: "${dataBlurURL}" },\n`;
   }
   imagesTsCode += `  ],\n`;
 }
