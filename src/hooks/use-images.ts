@@ -4,25 +4,36 @@
 import { useQuery } from "@tanstack/react-query";
 
 //* Locals imports
-import type { ImagesResponse } from "@/app/api/images/route";
+import type { ImagesResponse } from "@/services/image-service";
 
-async function fetchImages(page: number, limit: number, language?: string): Promise<ImagesResponse> {
+type FetchImagesProps = {
+  page: number;
+  limit: number;
+  language?: string;
+};
+
+interface UseImagesProps extends FetchImagesProps {
+  initialData?: ImagesResponse;
+};
+
+async function fetchImages(props: FetchImagesProps): Promise<ImagesResponse> {
   const url = new URL("/api/images", window.location.origin);
-  
-  url.searchParams.set("page", page.toString());
-  url.searchParams.set("limit", limit.toString());
-  
-  if (language) {
-    url.searchParams.set("language", language);
+
+  url.searchParams.set("page", props.page.toString());
+  url.searchParams.set("limit", props.limit.toString());
+
+  if (props.language) {
+    url.searchParams.set("language", props.language);
   }
 
   const response = await fetch(url.toString());
   return await response.json();
 }
 
-export function useImages(page: number, limit: number, language?: string) {
+export function useImages(props: UseImagesProps) {
   return useQuery({
-    queryKey: ["images", page, limit, language],
-    queryFn: () => fetchImages(page, limit, language),
+    queryKey: ["images", props.page, props.limit, props.language],
+    queryFn: () => fetchImages(props),
+    initialData: props.initialData,
   });
 }
