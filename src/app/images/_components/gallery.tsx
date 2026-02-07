@@ -16,6 +16,9 @@ import { useImages } from "@/hooks/use-images";
 //* Utils imports
 import { distributeByColumns } from "./utils";
 
+const MAX_IMAGES_TO_LOAD = 32;
+const ROOT_MARGIN = "512px"; // the distance from the sentinel to the bottom of the viewport
+
 type GalleryProps = {
   initialData: ImagesResponse;
   language?: string;
@@ -25,7 +28,7 @@ type GalleryProps = {
 export function Gallery(props: GalleryProps) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
   const images = useImages({
-    limit: props.limit ?? 10,
+    limit: props.limit ?? MAX_IMAGES_TO_LOAD,
     language: props.language,
     initialData: props.initialData,
   });
@@ -48,7 +51,7 @@ export function Gallery(props: GalleryProps) {
           fetchNextPage();
         }
       },
-      { rootMargin: "200px", threshold: 0.1 }, // 10% of the sentinel's height
+      { rootMargin: ROOT_MARGIN, threshold: 0.1 }, // 10% of the sentinel's height
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
