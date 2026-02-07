@@ -43,6 +43,8 @@ export function useImages(props: UseImagesProps) {
         language,
       }),
     initialPageParam: 1,
+    staleTime: 1000 * 60 * 60, // 1 hour - data considered fresh
+    gcTime: 1000 * 60 * 60 * 24, // 24 hours - keep in cache when unused
     getNextPageParam: (lastPage) => {
       const hasMore =
         lastPage.hasNextPage ?? lastPage.data.length >= lastPage.limit;
@@ -50,9 +52,9 @@ export function useImages(props: UseImagesProps) {
     },
     initialData: props.initialData
       ? {
-          pages: [props.initialData],
-          pageParams: [1],
-        }
+        pages: [props.initialData],
+        pageParams: [1],
+      }
       : undefined,
   });
 }
