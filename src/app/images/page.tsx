@@ -1,10 +1,10 @@
 "use server";
-
-//* Local imports
-import { getImages } from "@/services/image-service";
+//* Libraries imports
+import { Suspense } from "react";
 
 //* Components imports
-import { Gallery } from "./_components/gallery";
+import { LoadInitialGallery } from "./_components/load-initial-gallery";
+import ImagesLoading from "./loading";
 
 type ImagesPageProps = {
   searchParams: Promise<{
@@ -15,13 +15,9 @@ type ImagesPageProps = {
 };
 
 export default async function ImagesPage(props: ImagesPageProps) {
-  const { page, limit, language } = await props.searchParams;
-
-  const images = await getImages({
-    page: Number(page ?? 1),
-    limit: Number(limit ?? 10),
-    language: language ?? null,
-  });
-
-  return <Gallery initialData={images} />;
+  return (
+    <Suspense fallback={<ImagesLoading />}>
+      <LoadInitialGallery searchParams={props.searchParams} />
+    </Suspense>
+  );
 }
