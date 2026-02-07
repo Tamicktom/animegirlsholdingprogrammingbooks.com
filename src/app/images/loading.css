@@ -1,0 +1,119 @@
+/* Matches useColumnCount breakpoints (no JS): 1→2→3→4→5→6→7→8→9→10→11 columns */
+.gallery-loading {
+  display: grid;
+  gap: 1rem;
+  align-items: start;
+  grid-template-columns: 1fr;
+  padding: 1rem;
+  width: 100%;
+  min-height: 100svh;
+  background-color: var(--gallery-loading-bg, #000);
+}
+
+@media (min-width: 256px) {
+  .gallery-loading {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 512px) {
+  .gallery-loading {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 768px) {
+  .gallery-loading {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1024px) {
+  .gallery-loading {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1280px) {
+  .gallery-loading {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1536px) {
+  .gallery-loading {
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 1792px) {
+  .gallery-loading {
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 2048px) {
+  .gallery-loading {
+    grid-template-columns: repeat(9, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 2304px) {
+  .gallery-loading {
+    grid-template-columns: repeat(10, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 2560px) {
+  .gallery-loading {
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+  }
+}
+
+.gallery-loading__skeleton {
+  width: 100%;
+  min-height: 8rem;
+  border-radius: 0.5rem;
+  background: linear-gradient(
+    110deg,
+    var(--gallery-skeleton-from, #1a1a1a) 0%,
+    var(--gallery-skeleton-via, #2a2a2a) 50%,
+    var(--gallery-skeleton-from, #1a1a1a) 100%
+  );
+  background-size: 200% 100%;
+  background-position: 0 0;
+  animation: gallery-loading-shine 1.2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gallery-loading__skeleton {
+    animation: none;
+  }
+}
+
+@keyframes gallery-loading-shine {
+  to {
+    background-position: 200% 0;
+  }
+}
+
+/* Varied aspect ratios so the skeleton grid feels like the real gallery */
+.gallery-loading__skeleton--tall {
+  aspect-ratio: 3 / 4;
+}
+
+.gallery-loading__skeleton--square {
+  aspect-ratio: 1;
+}
+
+.gallery-loading__skeleton--wide {
+  aspect-ratio: 4 / 5;
+}
+
+.gallery-loading__skeleton--portrait {
+  aspect-ratio: 2 / 3;
+}
+
+.gallery-loading__skeleton--short {
+  aspect-ratio: 5 / 4;
+}
