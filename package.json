@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "bun run --bun next dev",
-    "build": "bun run download-images && bun run generate-images-object && bun run next build",
+    "build": "npm run download-images && npm run generate-images-object && next build",
     "start": "next start",
     "lint": "biome check",
     "format": "biome format --write",
-    "download-images": "bun run --bun infra/scripts/download-images.ts",
-    "generate-images-object": "bun run --bun infra/scripts/generate-images-object.ts"
+    "download-images": "bun run infra/scripts/download-images.ts",
+    "generate-images-object": "bun run infra/scripts/generate-images-object.ts"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
@@ -23,10 +23,10 @@
     "@biomejs/biome": "2.3.14",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^25.2.1",
-    "simple-git": "^3.30.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "simple-git": "^3.30.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   },
