@@ -6,7 +6,7 @@ import { getImages } from "@/services/image-service";
 //* Components imports
 import { Gallery } from "./gallery";
 
-const DEFAULT_LIMIT = 20;
+const DEFAULT_LIMIT = 32;
 
 type LoadInitialGalleryProps = {
   searchParams: Promise<{

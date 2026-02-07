@@ -15,26 +15,30 @@ import "./gallery.css";
 import { useColumnCount } from "@/hooks/use-column-count";
 import { useImages } from "@/hooks/use-images";
 
-const MAX_IMAGES_TO_LOAD = 16;
+const MAX_IMAGES_TO_LOAD = 20;
+const COLUMN_WIDTH = 256; // 256px is the maximum width of a column
 
-type GalleryProps = {
-  initialData: ImagesResponse;
-  language?: string;
-  limit?: number;
-};
-
-function distributeByColumns<T>(
-  items: T[],
+/**
+ * Distributes items across columns so that each column's total "height" is balanced.
+ * Uses height/width ratio as weight (in a fixed-width column, rendered height is proportional to it).
+ */
+function distributeByColumns(
+  items: AnimeGirlImages[],
   columnCount: number,
-): { item: T; globalIndex: number }[][] {
-  const columns: { item: T; globalIndex: number }[][] = Array.from(
-    { length: columnCount },
-    () => [],
-  );
+): { item: AnimeGirlImages; globalIndex: number }[][] {
+  const columns: { item: AnimeGirlImages; globalIndex: number }[][] =
+    Array.from({ length: columnCount }, () => []);
+  const columnHeights: number[] = Array.from({ length: columnCount }, () => 0);
+
   items.forEach((item, index) => {
-    const columnIndex = index % columnCount;
-    columns[columnIndex].push({ item, globalIndex: index });
+    const heightWeight = item.height / item.width;
+    const shortestColumnIndex = columnHeights.indexOf(
+      Math.min(...columnHeights),
+    );
+    columns[shortestColumnIndex].push({ item, globalIndex: index });
+    columnHeights[shortestColumnIndex] += heightWeight;
   });
+
   return columns;
 }
 
@@ -62,9 +66,9 @@ function GalleryItem(props: GalleryItemProps) {
         <img
           src={image.path}
           alt={image.altName}
-          width={image.width}
-          height={image.height}
-          className="w-full h-full object-cover rounded-lg"
+          width={COLUMN_WIDTH}
+          height={COLUMN_WIDTH * (image.height / image.width)}
+          className="size-full object-cover rounded-lg"
         />
       </div>
     );
@@ -79,17 +83,23 @@ function GalleryItem(props: GalleryItemProps) {
       <Image
         src={image.path}
         alt={image.altName}
-        width={image.width}
-        height={image.height}
+        width={COLUMN_WIDTH}
+        height={COLUMN_WIDTH * (image.height / image.width)}
         loading={loading}
         priority={priority}
         placeholder="blur"
         blurDataURL={image.dataBlurURL}
-        className="w-full h-full object-cover rounded-lg"
+        className="size-full object-cover rounded-lg"
       />
     </div>
   );
 }
+
+type GalleryProps = {
+  initialData: ImagesResponse;
+  language?: string;
+  limit?: number;
+};
 
 export function Gallery(props: GalleryProps) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
@@ -99,8 +109,7 @@ export function Gallery(props: GalleryProps) {
     initialData: props.initialData,
   });
   const columnCount = useColumnCount();
-  const data =
-    images.data?.pages.flatMap((page) => page.data) ?? [];
+  const data = images.data?.pages.flatMap((page) => page.data) ?? [];
   const columns = distributeByColumns(data, columnCount);
   const hasNextPage = images.hasNextPage ?? false;
   const isFetchingNextPage = images.isFetchingNextPage;
