@@ -6,6 +6,9 @@ import Image from "next/image";
 //* Locals imports
 import type { ImagesResponse } from "@/services/image-service";
 
+//* Styles imports
+import "./gallery.css";
+
 //* Hooks imports
 import { useImages } from "@/hooks/use-images";
 
@@ -22,7 +25,7 @@ export function Gallery(props: GalleryProps) {
     initialData: props.initialData,
   });
   return (
-    <div className="w-full min-h-svh bg-black masonry p-4">
+    <div className="w-full min-h-svh bg-black gallery p-4">
       {images.data?.data.map((image, index) => {
         const key = `${image.language}-${image.name}-${index}`;
         const aspectRatio = image.width / image.height;
@@ -35,7 +38,7 @@ export function Gallery(props: GalleryProps) {
           return (
             <div
               key={key}
-              className="masonry-item mb-4"
+              className="gallery-item mb-4"
               style={{ aspectRatio: `${aspectRatio}` }}
             >
               {/** biome-ignore lint/performance/noImgElement: NextImage does not support GIFs */}
@@ -53,7 +56,7 @@ export function Gallery(props: GalleryProps) {
         return (
           <div
             key={key}
-            className="masonry-item mb-4"
+            className="gallery-item mb-4"
             style={{ aspectRatio: `${aspectRatio}` }}
           >
             <Image

@@ -1,0 +1,44 @@
+.gallery {
+  column-width: 16rem;
+  column-gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .gallery {
+    column-width: 18rem;
+  }
+}
+
+@media (min-width: 1024px) {
+  .gallery {
+    column-width: 20rem;
+  }
+}
+
+@media (min-width: 1280px) {
+  .gallery {
+    column-width: 22rem;
+  }
+}
+
+.gallery-item {
+  display: inline-block;
+  width: 100%;
+  break-inside: avoid;
+  page-break-inside: avoid;
+  position: relative;
+  overflow: hidden;
+}
+
+.gallery-item img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.gallery-item > span {
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  position: relative !important;
+}
