@@ -12,6 +12,7 @@
     "generate-images-object": "bun run infra/scripts/generate-images-object.ts"
   },
   "dependencies": {
+    "@base-ui/react": "^1.1.0",
     "@phosphor-icons/react": "^2.1.10",
     "@tanstack/react-query": "^5.90.20",
     "next": "16.1.6",

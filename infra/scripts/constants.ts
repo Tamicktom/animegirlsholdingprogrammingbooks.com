@@ -7,5 +7,6 @@ export const IMAGES_OBJECT_FILE = "src/utils/images.ts";
 export const DATA_BLUR_URL_SIZE = 32;
 export const PROBLEMATIC_CHARACTERS_AND_ALTERNATIVES = [
   { character: "#", alternative: "sharp" },
+  { character: "++", alternative: "plus-plus" },
   { character: "+", alternative: "plus" },
 ];
