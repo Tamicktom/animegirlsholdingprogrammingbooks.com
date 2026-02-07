@@ -1,6 +1,13 @@
 "use server";
 
+//* Libraries imports
+import { cookies } from "next/headers";
+
 //* Local imports
+import {
+  VIEWPORT_WIDTH_COOKIE_NAME,
+  getColumnCount,
+} from "@/lib/column-count";
 import { getImages } from "@/services/image-service";
 
 //* Components imports
@@ -25,9 +32,20 @@ export async function LoadInitialGallery(props: LoadInitialGalleryProps) {
     language: language ?? null,
   });
 
+  let initialColumnCount: number | undefined;
+  const cookieStore = await cookies();
+  const viewportWidth = cookieStore.get(VIEWPORT_WIDTH_COOKIE_NAME)?.value;
+  if (viewportWidth) {
+    const width = Number.parseInt(viewportWidth, 10);
+    if (!Number.isNaN(width) && width > 0) {
+      initialColumnCount = getColumnCount(width);
+    }
+  }
+
   return (
     <Gallery
       initialData={images}
+      initialColumnCount={initialColumnCount}
       language={language ?? undefined}
       limit={Number(limit ?? DEFAULT_LIMIT)}
     />

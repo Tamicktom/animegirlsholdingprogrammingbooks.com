@@ -21,6 +21,7 @@ const ROOT_MARGIN = "512px"; // the distance from the sentinel to the bottom of 
 
 type GalleryProps = {
   initialData: ImagesResponse;
+  initialColumnCount?: number;
   language?: string;
   limit?: number;
 };
@@ -32,7 +33,9 @@ export function Gallery(props: GalleryProps) {
     language: props.language,
     initialData: props.initialData,
   });
-  const columnCount = useColumnCount();
+  const columnCount = useColumnCount({
+    serverSnapshot: props.initialColumnCount,
+  });
   const data = images.data?.pages.flatMap((page) => page.data) ?? [];
   const columns = distributeByColumns({ items: data, columnCount });
   const hasNextPage = images.hasNextPage ?? false;
