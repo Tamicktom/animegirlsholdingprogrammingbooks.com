@@ -9,7 +9,7 @@ import path from "node:path";
 import sharp from "sharp";
 
 //* Constants imports
-import { IMAGES_FOLDER, IMAGES_OBJECT_FILE } from "./constants";
+import { IMAGES_FOLDER, IMAGES_OBJECT_FILE, DATA_BLUR_URL_SIZE } from "./constants";
 
 console.log("Generating images object...");
 
@@ -47,8 +47,10 @@ for (const folder of folders) {
     const size = await fs.stat(imagePath).then(stats => stats.size);
     const extension = image.split(".")[1];
     const altName = imageName.replace("_", " ");
+    // compute height of the data blur url to keep the aspect ratio
+    const dataBlurURLHeight = Math.round((DATA_BLUR_URL_SIZE / width) * height);
     const dataBlurURL = await sharp(imagePath)
-      .resize(16, 16)
+      .resize(DATA_BLUR_URL_SIZE, dataBlurURLHeight)
       .toBuffer()
       .then(buffer => `data:image/${extension};base64,${buffer.toString("base64")}`);
 
