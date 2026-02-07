@@ -12,7 +12,13 @@ import fs from "node:fs/promises";
 import path from "node:path";
 
 //* Constants imports
-import { ANIME_GIRLS_HOLDING_PROGRAMMING_BOOKS_REPO_URL, ACCEPTED_IMAGE_EXTENSIONS, IMAGES_FOLDER, KNOW_FOLDERS_TO_DELETE } from "./constants";
+import {
+  ANIME_GIRLS_HOLDING_PROGRAMMING_BOOKS_REPO_URL,
+  ACCEPTED_IMAGE_EXTENSIONS,
+  IMAGES_FOLDER,
+  KNOW_FOLDERS_TO_DELETE,
+  PROBLEMATIC_CHARACTERS_AND_ALTERNATIVES
+} from "./constants";
 
 // If the IMAGES_FOLDER folder exists, delete it
 const imagesFolderExists = await fs.access(IMAGES_FOLDER).then(() => true, () => false);
@@ -48,17 +54,21 @@ for (const folder of folders) {
         await fs.rm(path.join(IMAGES_FOLDER, folder, subFolderFile));
       }
 
-      // if contains "#" on the name, rename the file to the name without the "#"
-      if (subFolderFile.includes("#")) {
-        await fs.rename(path.join(IMAGES_FOLDER, folder, subFolderFile), path.join(IMAGES_FOLDER, folder, subFolderFile.replace("#", "sharp")));
-        console.log(`Renamed file: ${subFolderFile} to ${subFolderFile.replace("#", "sharp")}`);
+      // if contains any of the problematic characters, rename the file to the name without the problematic character
+      for (const problematicCharacter of PROBLEMATIC_CHARACTERS_AND_ALTERNATIVES) {
+        if (subFolderFile.includes(problematicCharacter.character)) {
+          await fs.rename(path.join(IMAGES_FOLDER, folder, subFolderFile), path.join(IMAGES_FOLDER, folder, subFolderFile.replace(problematicCharacter.character, problematicCharacter.alternative)));
+          console.log(`Renamed file: ${subFolderFile} to ${subFolderFile.replace(problematicCharacter.character, problematicCharacter.alternative)}`);
+        }
       }
     }
 
-    // if contains "#" on the name, rename the folder to the name without the "#"
-    if (folder.includes("#")) {
-      await fs.rename(path.join(IMAGES_FOLDER, folder), path.join(IMAGES_FOLDER, folder.replace("#", "sharp")));
-      console.log(`Renamed folder: ${folder} to ${folder.replace("#", "sharp")}`);
+    // if contains any of the problematic characters, rename the folder to the name without the problematic character
+    for (const problematicCharacter of PROBLEMATIC_CHARACTERS_AND_ALTERNATIVES) {
+      if (folder.includes(problematicCharacter.character)) {
+        await fs.rename(path.join(IMAGES_FOLDER, folder), path.join(IMAGES_FOLDER, folder.replace(problematicCharacter.character, problematicCharacter.alternative)));
+        console.log(`Renamed folder: ${folder} to ${folder.replace(problematicCharacter.character, problematicCharacter.alternative)}`);
+      }
     }
   }
   // if is not a folder, delete it if it is not in the ACCEPTED_IMAGE_EXTENSIONS array
