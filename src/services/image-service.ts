@@ -24,28 +24,31 @@ type GetImagesProps = {
 };
 
 export async function getImages(props: GetImagesProps): Promise<ImagesResponse> {
-  let filteredImages: AnimeGirlImages[] = [];
+  let allImages: AnimeGirlImages[] = [];
 
   if (props.language) {
-    filteredImages = animeGirlsImages[props.language as keyof typeof animeGirlsImages] || [];
+    allImages =
+      animeGirlsImages[props.language as keyof typeof animeGirlsImages] ?? [];
   } else {
-    filteredImages = Object.values(animeGirlsImages).flat();
+    allImages = Object.values(animeGirlsImages).flat();
   }
 
-  if (props.page && props.limit) {
-    filteredImages = filteredImages.slice((props.page - 1) * props.limit, props.page * props.limit);
-  }
+  const totalCount = allImages.length;
+  const totalPages = Math.ceil(totalCount / props.limit);
+  const start = (props.page - 1) * props.limit;
+  const end = props.page * props.limit;
+  const data = allImages.slice(start, end);
 
   const response: ImagesResponse = {
-    data: filteredImages,
-    total: filteredImages.length,
+    data,
+    total: totalCount,
     page: props.page,
     limit: props.limit,
-    totalPages: Math.ceil(filteredImages.length / props.limit),
+    totalPages,
     currentPage: props.page,
     nextPage: props.page + 1,
     previousPage: props.page - 1,
-    hasNextPage: props.page < Math.ceil(filteredImages.length / props.limit),
+    hasNextPage: props.page < totalPages,
     hasPreviousPage: props.page > 1,
   };
 

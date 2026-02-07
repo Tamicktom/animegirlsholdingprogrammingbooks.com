@@ -1,7 +1,7 @@
 "use client";
 
 //* Libraries imports
-import { useQuery } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 //* Locals imports
 import type { ImagesResponse } from "@/services/image-service";
@@ -12,9 +12,9 @@ type FetchImagesProps = {
   language?: string;
 };
 
-interface UseImagesProps extends FetchImagesProps {
+interface UseImagesProps extends Omit<FetchImagesProps, "page"> {
   initialData?: ImagesResponse;
-};
+}
 
 async function fetchImages(props: FetchImagesProps): Promise<ImagesResponse> {
   const url = new URL("/api/images", window.location.origin);
@@ -31,9 +31,28 @@ async function fetchImages(props: FetchImagesProps): Promise<ImagesResponse> {
 }
 
 export function useImages(props: UseImagesProps) {
-  return useQuery({
-    queryKey: ["images", props.page, props.limit, props.language],
-    queryFn: () => fetchImages(props),
-    initialData: props.initialData,
+  const limit = props.limit;
+  const language = props.language;
+
+  return useInfiniteQuery({
+    queryKey: ["images", "infinite", limit, language],
+    queryFn: (context) =>
+      fetchImages({
+        page: context.pageParam,
+        limit,
+        language,
+      }),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const hasMore =
+        lastPage.hasNextPage ?? lastPage.data.length >= lastPage.limit;
+      return hasMore ? lastPage.nextPage : undefined;
+    },
+    initialData: props.initialData
+      ? {
+          pages: [props.initialData],
+          pageParams: [1],
+        }
+      : undefined,
   });
 }

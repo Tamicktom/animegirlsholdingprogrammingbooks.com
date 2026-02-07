@@ -2,6 +2,7 @@
 
 //* Libraries imports
 import Image from "next/image";
+import { useEffect, useRef } from "react";
 
 //* Locals imports
 import type { ImagesResponse } from "@/services/image-service";
@@ -18,6 +19,8 @@ const MAX_IMAGES_TO_LOAD = 16;
 
 type GalleryProps = {
   initialData: ImagesResponse;
+  language?: string;
+  limit?: number;
 };
 
 function distributeByColumns<T>(
@@ -89,14 +92,37 @@ function GalleryItem(props: GalleryItemProps) {
 }
 
 export function Gallery(props: GalleryProps) {
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const images = useImages({
-    page: 1,
-    limit: 10,
+    limit: props.limit ?? 10,
+    language: props.language,
     initialData: props.initialData,
   });
   const columnCount = useColumnCount();
-  const data = images.data?.data ?? [];
+  const data =
+    images.data?.pages.flatMap((page) => page.data) ?? [];
   const columns = distributeByColumns(data, columnCount);
+  const hasNextPage = images.hasNextPage ?? false;
+  const isFetchingNextPage = images.isFetchingNextPage;
+
+  const fetchNextPage = images.fetchNextPage;
+
+  useEffect(() => {
+    const sentinel = loadMoreRef.current;
+    if (!sentinel || !hasNextPage || isFetchingNextPage) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry?.isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      { rootMargin: "200px", threshold: 0 },
+    );
+    observer.observe(sentinel);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   return (
     <div
@@ -119,6 +145,18 @@ export function Gallery(props: GalleryProps) {
           </div>
         );
       })}
+      {hasNextPage && (
+        <div
+          ref={loadMoreRef}
+          className="gallery-load-more-sentinel"
+          style={{ gridColumn: `1 / -1` }}
+          aria-hidden
+        >
+          {isFetchingNextPage && (
+            <span className="gallery-load-more-label">Loading more…</span>
+          )}
+        </div>
+      )}
     </div>
   );
 }
