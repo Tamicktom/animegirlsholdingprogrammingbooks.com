@@ -1,21 +1,10 @@
-
-//* Locals imports
-import { animeGirlsImages } from "@/utils/images";
-import type { AnimeGirlImages } from "@/schemas/anime-girls-images";
+//* Libraries imports
 import { NextResponse } from "next/server";
 
-export type ImagesResponse = {
-  data: AnimeGirlImages[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  currentPage: number;
-  nextPage: number;
-  previousPage: number;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
-};
+//* Locals imports
+import type { ImagesResponse } from "@/services/image-service";
+import { getImages } from "@/services/image-service";
+
 
 export async function GET(request: Request) {
   const searchParams = new URL(request.url).searchParams;
@@ -30,30 +19,7 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Invalid page or limit" }, { status: 400 });
   }
 
-  let filteredImages: AnimeGirlImages[] = [];
-
-  if (language) {
-    filteredImages = animeGirlsImages[language as keyof typeof animeGirlsImages] || [];
-  } else {
-    filteredImages = Object.values(animeGirlsImages).flat();
-  }
-
-  if (pageNumber && limitNumber) {
-    filteredImages = filteredImages.slice((pageNumber - 1) * limitNumber, pageNumber * limitNumber);
-  }
-
-  const response: ImagesResponse = {
-    data: filteredImages,
-    total: filteredImages.length,
-    page: pageNumber,
-    limit: limitNumber,
-    totalPages: Math.ceil(filteredImages.length / limitNumber),
-    currentPage: pageNumber,
-    nextPage: pageNumber + 1,
-    previousPage: pageNumber - 1,
-    hasNextPage: pageNumber < Math.ceil(filteredImages.length / limitNumber),
-    hasPreviousPage: pageNumber > 1,
-  };
+  const response: ImagesResponse = await getImages({ page: pageNumber, limit: limitNumber, language });
 
   return NextResponse.json(response, { status: 200 });
 }
