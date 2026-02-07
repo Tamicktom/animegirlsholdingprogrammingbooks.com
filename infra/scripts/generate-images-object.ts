@@ -61,7 +61,9 @@ imagesTsCode += "};\n";
 
 imagesTsCode += "export const animeGirlsLanguages: string[] = Object.keys(animeGirlsImages);\n";
 
-//* Save the images object to the IMAGES_OBJECT_FILE file
+//* Ensure the output directory exists, then save the images object
+const outputDir = path.dirname(IMAGES_OBJECT_FILE);
+await fs.mkdir(outputDir, { recursive: true });
 await fs.writeFile(IMAGES_OBJECT_FILE, imagesTsCode);
 console.log("Images object generated successfully");
 console.log(`Images object saved to ${IMAGES_OBJECT_FILE}`);
