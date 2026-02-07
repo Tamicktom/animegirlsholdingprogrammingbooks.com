@@ -48,7 +48,7 @@ export function Gallery(props: GalleryProps) {
           fetchNextPage();
         }
       },
-      { rootMargin: "200px", threshold: 0 },
+      { rootMargin: "200px", threshold: 0.1 }, // 10% of the sentinel's height
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
@@ -78,7 +78,7 @@ export function Gallery(props: GalleryProps) {
       {hasNextPage && (
         <div
           ref={loadMoreRef}
-          className="gallery-load-more-sentinel"
+          className="min-h-1 p-4 h-32 flex items-center justify-center"
           style={{ gridColumn: `1 / -1` }}
           aria-hidden
         >

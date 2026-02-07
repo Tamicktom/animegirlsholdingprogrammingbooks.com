@@ -106,11 +106,6 @@ body {
   position: relative !important;
 }
 
-.gallery-load-more-sentinel {
-  min-height: 1px;
-  padding: 0.5rem 0;
-}
-
 .gallery-load-more-label {
   color: var(--color-text-muted, #888);
   font-size: 0.875rem;
