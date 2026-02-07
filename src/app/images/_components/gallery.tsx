@@ -1,7 +1,7 @@
 "use client";
 
 //* Libraries imports
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 //* Locals imports
 import type { ImagesResponse } from "@/services/image-service";
@@ -28,6 +28,11 @@ type GalleryProps = {
 
 export function Gallery(props: GalleryProps) {
   const loadMoreRef = useRef<HTMLDivElement>(null);
+  const [hasMounted, setHasMounted] = useState(false);
+
+  const isFirstVisit = props.initialColumnCount === undefined;
+  const isColumnCountReady = !isFirstVisit || hasMounted;
+
   const images = useImages({
     limit: props.limit ?? MAX_IMAGES_TO_LOAD,
     language: props.language,
@@ -43,6 +48,7 @@ export function Gallery(props: GalleryProps) {
 
   const fetchNextPage = images.fetchNextPage;
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: isColumnCountReady is required so the effect re-runs when the sentinel mounts (first visit)
   useEffect(() => {
     const sentinel = loadMoreRef.current;
     if (!sentinel || !hasNextPage || isFetchingNextPage) return;
@@ -58,7 +64,19 @@ export function Gallery(props: GalleryProps) {
     );
     observer.observe(sentinel);
     return () => observer.disconnect();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage, isColumnCountReady]);
+
+  useEffect(() => {
+    setHasMounted(true);
+  }, []);
+
+  if (!isColumnCountReady) {
+    return (
+      <div className="flex min-h-svh w-full items-center justify-center bg-neutral-100 p-4 dark:bg-neutral-900">
+        <span className="gallery-load-more-label">Loading…</span>
+      </div>
+    );
+  }
 
   return (
     <div
