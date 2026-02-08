@@ -8,8 +8,11 @@ import { XIcon } from "@phosphor-icons/react";
 //* Locals imports
 import type { AnimeGirlImages } from "@/schemas/anime-girls-images";
 
+//* Components imports
+import { Button } from "@base-ui/react/button";
+
 //* Utils imports
-import { formatName, formatAltName } from "./utils";
+import { formatName } from "./utils";
 
 const MAX_IMAGES_TO_LOAD = 32;
 const COLUMN_WIDTH = 256; // 256px is the maximum width of a column
@@ -23,6 +26,8 @@ export function GalleryItem(props: GalleryItemProps) {
   const image = props.image;
   const globalIndex = props.globalIndex;
 
+  const handleDownload = () => {};
+
   return (
     <Dialog.Root>
       <Dialog.Trigger className="cursor-pointer">
@@ -34,25 +39,35 @@ export function GalleryItem(props: GalleryItemProps) {
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Backdrop className="dialog-backdrop fixed inset-0 min-h-dvh bg-black opacity-20 transition-opacity duration-150 ease-out dark:opacity-70 data-starting-style:opacity-0 data-ending-style:opacity-0 backdrop-blur-sm" />
-        <Dialog.Popup className="fixed top-1/2 left-1/2 w-full max-w-[calc(100vw-3rem)] -translate-x-1/2 -translate-y-1/2 rounded-lg transition-all duration-150 ease-out data-starting-style:opacity-0 data-starting-style:scale-90 data-ending-style:opacity-0 data-ending-style:scale-90 h-full max-h-[calc(100vh-3rem)] overflow-y-auto">
-          <Dialog.Title className="text-lg font-medium sr-only">
-            {formatName(image.name)}
-          </Dialog.Title>
-          <Dialog.Description className="text-sm text-gray-500 sr-only">
-            Here you can see the original image.
-          </Dialog.Description>{" "}
-          <Dialog.Close className="absolute top-2 right-2">
+        <Dialog.Popup className="fixed top-1/2 left-1/2 w-full max-w-3xl h-[calc(100dvh-3rem)] max-h-[calc(100dvh-3rem)] -translate-x-1/2 -translate-y-1/2 rounded-lg transition-all duration-150 ease-out data-starting-style:opacity-0 data-starting-style:scale-90 data-ending-style:opacity-0 data-ending-style:scale-90 overflow-hidden bg-neutral-100 dark:bg-neutral-900 p-4 flex flex-col">
+          <Dialog.Close className="absolute top-2 right-2 z-10">
             <XIcon />
           </Dialog.Close>
-          <div className="flex flex-col w-full h-auto">
+          <div className="flex min-h-0 flex-1 shrink items-center justify-center overflow-hidden max-h-[calc(100dvh-12rem)] w-full mx-auto">
             {/** biome-ignore lint/performance/noImgElement: <render original image> */}
             <img
               src={image.path}
               alt={image.altName}
               width={image.width}
               height={image.height}
-              className="size-full object-cover rounded-lg"
+              className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg"
             />
+          </div>
+          <div className="flex flex-col gap-2 pt-8 w-full max-w-2xl">
+            <Dialog.Title className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
+              {formatName(image.name)}
+            </Dialog.Title>
+            <Dialog.Description className="text-sm text-neutral-600 dark:text-neutral-400 sr-only">
+              Original image
+            </Dialog.Description>{" "}
+            <Button
+              id={`download-image-${globalIndex}`}
+              type="button"
+              onClick={handleDownload}
+              className="bg-pink-600 text-white hover:bg-pink-700 px-4 py-2 cursor-pointer rounded-lg"
+            >
+              Download
+            </Button>
           </div>
         </Dialog.Popup>
       </Dialog.Portal>
