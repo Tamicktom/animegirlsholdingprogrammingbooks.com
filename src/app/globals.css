@@ -110,3 +110,10 @@ body {
   color: var(--color-text-muted, #888);
   font-size: 0.875rem;
 }
+
+/* iOS 26+: Ensure dialog backdrop covers the entire visible viewport */
+@supports (-webkit-touch-callout: none) {
+  .dialog-backdrop {
+    position: absolute;
+  }
+}

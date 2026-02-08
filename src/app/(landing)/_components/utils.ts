@@ -26,3 +26,28 @@ export function distributeByColumns(props: DistributeByColumnsProps): { item: An
 
   return columns;
 }
+
+const replacers = {
+  "Sharp": "#",
+  "Plus-Plus": "++",
+  "Plus": "+",
+  "_": " ",
+};
+
+type KeyOfReplacers = keyof typeof replacers;
+
+export function formatName(name: string) {
+  let newName = name;
+  for (const replacer of Object.keys(replacers) as KeyOfReplacers[]) {
+    newName = newName.replaceAll(replacer, replacers[replacer]);
+  }
+  return newName;
+}
+
+export function formatAltName(altName: string) {
+  let newAltName = altName;
+  for (const replacer of Object.keys(replacers) as KeyOfReplacers[]) {
+    newAltName = newAltName.replaceAll(replacer, replacers[replacer]);
+  }
+  return newAltName;
+}
