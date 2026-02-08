@@ -12,7 +12,7 @@ import type { AnimeGirlImages } from "@/schemas/anime-girls-images";
 import { Button } from "@base-ui/react/button";
 
 //* Utils imports
-import { formatName } from "./utils";
+import { formatName, formatAltName } from "./utils";
 
 const MAX_IMAGES_TO_LOAD = 32;
 const COLUMN_WIDTH = 256; // 256px is the maximum width of a column
@@ -26,7 +26,18 @@ export function GalleryItem(props: GalleryItemProps) {
   const image = props.image;
   const globalIndex = props.globalIndex;
 
-  const handleDownload = () => {};
+  const downloadFilename =
+    image.path.split("/").pop() ?? `${image.name}.${image.extension}`;
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = image.path;
+    link.download = downloadFilename;
+    link.rel = "noopener noreferrer";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   return (
     <Dialog.Root>
@@ -47,13 +58,13 @@ export function GalleryItem(props: GalleryItemProps) {
             {/** biome-ignore lint/performance/noImgElement: <render original image> */}
             <img
               src={image.path}
-              alt={image.altName}
+              alt={formatAltName(image.altName)}
               width={image.width}
               height={image.height}
               className="max-w-full max-h-full w-auto h-auto object-contain rounded-lg"
             />
           </div>
-          <div className="flex flex-col gap-2 pt-8 w-full max-w-2xl">
+          <div className="flex flex-col gap-2 pt-8 w-full max-w-3xl">
             <Dialog.Title className="text-lg font-bold text-neutral-900 dark:text-neutral-100">
               {formatName(image.name)}
             </Dialog.Title>
@@ -64,7 +75,7 @@ export function GalleryItem(props: GalleryItemProps) {
               id={`download-image-${globalIndex}`}
               type="button"
               onClick={handleDownload}
-              className="bg-pink-600 text-white hover:bg-pink-700 px-4 py-2 cursor-pointer rounded-lg"
+              className="bg-pink-600 text-white hover:bg-pink-700 w-full px-4 py-2 cursor-pointer rounded-lg"
             >
               Download
             </Button>
@@ -88,7 +99,7 @@ function OptimizedImage(props: ImageComponentProps) {
     <div className="gallery-item" style={{ aspectRatio: `${aspectRatio}` }}>
       <Image
         src={props.image.path}
-        alt={props.image.altName}
+        alt={formatAltName(props.image.altName)}
         width={COLUMN_WIDTH}
         height={COLUMN_WIDTH * (props.image.height / props.image.width)}
         loading={loading}
@@ -108,7 +119,7 @@ function UnoptimizedImage(props: ImageComponentProps) {
       {/* biome-ignore lint/performance/noImgElement: NextImage does not support GIFs */}
       <img
         src={props.image.path}
-        alt={props.image.altName}
+        alt={formatAltName(props.image.altName)}
         width={COLUMN_WIDTH}
         height={COLUMN_WIDTH * (props.image.height / props.image.width)}
         className="size-full object-cover rounded-lg"
