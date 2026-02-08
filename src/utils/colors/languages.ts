@@ -574,6 +574,17 @@ export const languages: LanguageAndColor = {
       background: "#F0F5FA"
     }
   },
+  "Cplus-plus": {
+    name: "C++",
+    colors: {
+      vibrant: "#00599C",
+      muted: "#5B9FD9",
+      light: "#D9E8F5",
+      dark: "#003D5C",
+      contrast: "#FFFFFF",
+      background: "#F0F5FA"
+    }
+  },
   Ada: {
     name: "Ada",
     colors: {
@@ -937,8 +948,8 @@ export const languages: LanguageAndColor = {
       background: "#F0F5FA"
     }
   },
-  Aplus: {
-    name: "A+",
+  "Aplus-plus": {
+    name: "A++",
     colors: {
       vibrant: "#6B8E23",
       muted: "#9B9F5F",
