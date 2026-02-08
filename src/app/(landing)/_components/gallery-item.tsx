@@ -11,6 +11,7 @@ import type { AnimeGirlImages } from "@/schemas/anime-girls-images";
 
 //* Components imports
 import { Button } from "@base-ui/react/button";
+import { Badge } from "@/components/badge";
 
 //* Utils imports
 import { formatName, formatAltName } from "./utils";
@@ -97,7 +98,10 @@ function OptimizedImage(props: ImageComponentProps) {
   const priority = props.globalIndex < MAX_IMAGES_TO_LOAD;
   const aspectRatio = props.image.width / props.image.height;
   return (
-    <div className="gallery-item" style={{ aspectRatio: `${aspectRatio}` }}>
+    <div
+      className="gallery-item relative"
+      style={{ aspectRatio: `${aspectRatio}` }}
+    >
       <Image
         src={props.image.path}
         alt={formatAltName(props.image.altName)}
@@ -109,6 +113,9 @@ function OptimizedImage(props: ImageComponentProps) {
         blurDataURL={props.image.dataBlurURL}
         className="size-full object-cover rounded-lg"
       />
+      <div className="absolute bottom-1 right-1">
+        <Badge language={props.image.language} />
+      </div>
     </div>
   );
 }
@@ -116,7 +123,10 @@ function OptimizedImage(props: ImageComponentProps) {
 function UnoptimizedImage(props: ImageComponentProps) {
   const aspectRatio = props.image.width / props.image.height;
   return (
-    <div className="gallery-item" style={{ aspectRatio: `${aspectRatio}` }}>
+    <div
+      className="gallery-item relative"
+      style={{ aspectRatio: `${aspectRatio}` }}
+    >
       {/* biome-ignore lint/performance/noImgElement: NextImage does not support GIFs */}
       <img
         src={props.image.path}
@@ -125,6 +135,9 @@ function UnoptimizedImage(props: ImageComponentProps) {
         height={COLUMN_WIDTH * (props.image.height / props.image.width)}
         className="size-full object-cover rounded-lg"
       />
+      <div className="absolute bottom-1 right-1">
+        <Badge language={props.image.language} />
+      </div>
     </div>
   );
 }
