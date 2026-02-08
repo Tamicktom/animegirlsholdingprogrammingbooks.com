@@ -54,21 +54,25 @@ for (const folder of folders) {
         await fs.rm(path.join(IMAGES_FOLDER, folder, subFolderFile));
       }
 
-      // if contains any of the problematic characters, rename the file to the name without the problematic character
+      // compute the new filename by applying all replacements (order matters: "++" before "+")
+      let newFileName = subFolderFile;
       for (const problematicCharacter of PROBLEMATIC_CHARACTERS_AND_ALTERNATIVES) {
-        if (subFolderFile.includes(problematicCharacter.character)) {
-          await fs.rename(path.join(IMAGES_FOLDER, folder, subFolderFile), path.join(IMAGES_FOLDER, folder, subFolderFile.replace(problematicCharacter.character, problematicCharacter.alternative)));
-          console.log(`Renamed file: ${subFolderFile} to ${subFolderFile.replace(problematicCharacter.character, problematicCharacter.alternative)}`);
-        }
+        newFileName = newFileName.replaceAll(problematicCharacter.character, problematicCharacter.alternative);
+      }
+      if (newFileName !== subFolderFile) {
+        await fs.rename(path.join(IMAGES_FOLDER, folder, subFolderFile), path.join(IMAGES_FOLDER, folder, newFileName));
+        console.log(`Renamed file: ${subFolderFile} to ${newFileName}`);
       }
     }
 
-    // if contains any of the problematic characters, rename the folder to the name without the problematic character
+    // compute the new folder name by applying all replacements (order matters: "++" before "+")
+    let newFolderName = folder;
     for (const problematicCharacter of PROBLEMATIC_CHARACTERS_AND_ALTERNATIVES) {
-      if (folder.includes(problematicCharacter.character)) {
-        await fs.rename(path.join(IMAGES_FOLDER, folder), path.join(IMAGES_FOLDER, folder.replace(problematicCharacter.character, problematicCharacter.alternative)));
-        console.log(`Renamed folder: ${folder} to ${folder.replace(problematicCharacter.character, problematicCharacter.alternative)}`);
-      }
+      newFolderName = newFolderName.replaceAll(problematicCharacter.character, problematicCharacter.alternative);
+    }
+    if (newFolderName !== folder) {
+      await fs.rename(path.join(IMAGES_FOLDER, folder), path.join(IMAGES_FOLDER, newFolderName));
+      console.log(`Renamed folder: ${folder} to ${newFolderName}`);
     }
   }
   // if is not a folder, delete it if it is not in the ACCEPTED_IMAGE_EXTENSIONS array
