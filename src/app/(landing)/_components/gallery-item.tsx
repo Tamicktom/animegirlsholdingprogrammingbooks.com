@@ -41,7 +41,7 @@ export function GalleryItem(props: GalleryItemProps) {
 
   return (
     <Dialog.Root>
-      <Dialog.Trigger className="cursor-pointer">
+      <Dialog.Trigger className="cursor-pointer border-2 border-transparent hover:border-pink-200 dark:hover:border-pink-600 rounded-lg">
         {image.extension === "gif" ? (
           <UnoptimizedImage image={image} globalIndex={globalIndex} />
         ) : (
