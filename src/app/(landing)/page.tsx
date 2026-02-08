@@ -3,6 +3,8 @@
 import { Suspense } from "react";
 
 //* Components imports
+import { LandingCTA } from "./_components/landing-cta";
+import { LandingFooter } from "./_components/landing-footer";
 import { LoadInitialGallery } from "./_components/load-initial-gallery";
 import ImagesLoading from "./loading";
 
@@ -16,8 +18,12 @@ type ImagesPageProps = {
 
 export default async function ImagesPage(props: ImagesPageProps) {
   return (
-    <Suspense fallback={<ImagesLoading />}>
-      <LoadInitialGallery searchParams={props.searchParams} />
-    </Suspense>
+    <>
+      <LandingCTA />
+      <Suspense fallback={<ImagesLoading />}>
+        <LoadInitialGallery searchParams={props.searchParams} />
+      </Suspense>
+      <LandingFooter />
+    </>
   );
 }
