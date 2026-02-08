@@ -4,6 +4,7 @@
 import Image from "next/image";
 import { Dialog } from "@base-ui/react/dialog";
 import { XIcon } from "@phosphor-icons/react";
+import { useCallback } from "react";
 
 //* Locals imports
 import type { AnimeGirlImages } from "@/schemas/anime-girls-images";
@@ -29,7 +30,7 @@ export function GalleryItem(props: GalleryItemProps) {
   const downloadFilename =
     image.path.split("/").pop() ?? `${image.name}.${image.extension}`;
 
-  const handleDownload = () => {
+  const handleDownload = useCallback(() => {
     const link = document.createElement("a");
     link.href = image.path;
     link.download = downloadFilename;
@@ -37,7 +38,7 @@ export function GalleryItem(props: GalleryItemProps) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-  };
+  }, [image.path, downloadFilename]);
 
   return (
     <Dialog.Root>
