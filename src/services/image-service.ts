@@ -1,5 +1,3 @@
-"use server";
-
 //* Locals imports
 import type { AnimeGirlImages } from "@/schemas/anime-girls-images";
 import { animeGirlsImages } from "@/utils/images";
