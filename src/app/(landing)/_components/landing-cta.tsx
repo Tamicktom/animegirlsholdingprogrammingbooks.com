@@ -1,4 +1,3 @@
-"use server";
 //* Libraries imports
 import { GithubLogoIcon } from "@phosphor-icons/react/ssr";
 import Link from "next/link";

@@ -1,5 +1,3 @@
-"use server";
-
 //* Libraries imports
 import { cookies } from "next/headers";
 
